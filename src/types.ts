@@ -1,8 +1,6 @@
-export type Method = 'getAddress' | 'sendTransaction'
-
 export interface ISendData {
   currency: string
-  method: Method
+  method: string
   params?: {
     [key: string]: string
   }
@@ -10,20 +8,20 @@ export interface ISendData {
 
 export interface IEvmSendData {
   chainId: number
-  method: Method
+  method: string
   params?: {
     [key: string]: string
   }
 }
 
-export interface IResponse {
-  success: boolean
-  error?: string
-  result?: {
-    [key: string]: string
-  }
+export interface IErrorResponse {
+  name: string
+  message: string
+  code: number
 }
 
-export interface HTMLIFrameCustom extends HTMLIFrameElement {
-  contentWindow: Window
+export interface IResponse {
+  success: boolean
+  error?: IErrorResponse
+  data?: string
 }

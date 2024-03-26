@@ -6,8 +6,9 @@
 
 ## Description
 
-**@noonewallet/widget-communicator** is a TypeScript library that enables embedding an iframe with the Noone Wallet
-crypto wallet onto a web page, and subsequently configuring communication between the iframe and the parent page.
+**@noonewallet/widget-communicator** is a TypeScript library that enables embedding an iframe with the Noone Crypto
+Wallet
+onto a web page, and subsequently configuring communication between the iframe and the parent page.
 
 ## Installation
 
@@ -39,6 +40,8 @@ Add a `<div>` element to the page with a unique ID, for example, `wallet-iframe`
 </body>
 ```
 
+Then initialize the iframe using `IframeManager`.
+
 ```ts
 import {IframeManager} from '@noonewallet/widget-communicator'
 
@@ -46,14 +49,15 @@ const iframe = new IframeManager('wallet-iframe', 'https://iframe-url.com/')
 const loaded = await iframe.render() // true
 
 ```
-
-- **wallet-iframe** - the id attribute of the iframe, must be unique.
-- **https://iframe-url.com/** - the iframe URL.
+- **wallet-iframe** - the id attribute of the iframe, must be unique,
+- **https://iframe-url.com/** - the iframe URL, where the Noone Crypto Wallet is hosted.
 - **iframe.render()** - awaits until the iframe is rendered on the page.
 
 After these steps, the iframe will appear on the page, and you can proceed to configure communication with it.
 
-## Setting up Communicator
+> You can test the functionality of the iframe and all the described methods on the [website](https://noonewallet.github.io/noone-widget-preview/).
+
+## Usage
 
 To establish communication between the iframe and the parent website, you need to instantiate the `EvmConnector` class.
 Currently, only operations with EVM (Ethereum Virtual Machine) currencies are supported. You can retrieve the list of

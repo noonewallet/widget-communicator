@@ -1,3 +1,5 @@
+import {IResponse} from './types'
+
 const DEFAULT_IFRAME_WIDTH = '375'
 const DEFAULT_IFRAME_HEIGHT = '600'
 const DEFAULT_IFRAME_ID = 'wallet-iframe'
@@ -28,8 +30,8 @@ export class IframeManager {
     return this._loaded
   }
 
-  public render() {
-    return new Promise((resolve, reject) => {
+  public render(): Promise<boolean> {
+    return new Promise((resolve) => {
       if (this._loaded) resolve(true)
       if (!document) {
         this.throwError(ERRORS.documentNotFound)
