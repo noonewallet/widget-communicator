@@ -1,17 +1,24 @@
+export type AnyParams = {
+  [key: string]: string
+}
+
+export type Params = AnyParams | string | null
+
 export interface ISendData {
-  currency: string
   method: string
-  params?: {
-    [key: string]: string
-  }
+  currency?: string
+  params?: AnyParams
 }
 
 export interface IEvmSendData {
   chainId: number
   method: string
-  params?: {
-    [key: string]: string
-  }
+  params?: AnyParams
+}
+
+export interface IWalletSendData {
+  method: string
+  params?: AnyParams
 }
 
 export interface IErrorResponse {

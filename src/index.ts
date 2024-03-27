@@ -1,8 +1,14 @@
-import {IErrorResponse, IEvmSendData, IResponse, ISendData} from './types'
+import {
+  IErrorResponse,
+  IEvmSendData,
+  IResponse,
+  ISendData,
+  IWalletSendData,
+} from './types'
 import {IframeManager} from './init-widget'
-import {ERRORS} from './errors'
+import {ERRORS, WIDGET_TARGET} from './config'
 
-const WIDGET_TARGET = 'noone-widget'
+export {ERRORS, LISTENING_METHODS} from './config'
 
 class Connector {
   protected iframe: IframeManager
@@ -73,9 +79,41 @@ class EvmConnector extends Connector {
   }
 }
 
+class WalletConnector extends Connector {
+  private listeningMethods: string[]
+
+  constructor(iframe: IframeManager) {
+    super(iframe)
+    this.listeningMethods = []
+  }
+
+  public send(data: IWalletSendData): Promise<IResponse> {
+    const updatedData = {
+      method: data.method,
+      params: data.params,
+    }
+    return super._send(updatedData)
+  }
+
+  public listen(method: string, callback: (data: IResponse) => void) {
+    if (this.listeningMethods.includes(method)) {
+      console.log('already listening', method)
+      return
+    }
+    this.listeningMethods.push(method)
+    window.addEventListener('message', (event) => {
+      const {data} = event
+      if (data.target !== WIDGET_TARGET) return
+      if (data.method !== method) return
+      callback(data)
+    })
+  }
+}
+
 export {
   IframeManager,
   EvmConnector,
+  WalletConnector,
   IEvmSendData,
   IResponse,
   ISendData,

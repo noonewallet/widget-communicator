@@ -1,5 +1,3 @@
-import {IResponse} from './types'
-
 const DEFAULT_IFRAME_WIDTH = '375'
 const DEFAULT_IFRAME_HEIGHT = '600'
 const DEFAULT_IFRAME_ID = 'wallet-iframe'

@@ -1,3 +1,5 @@
+export const WIDGET_TARGET = 'noone-widget'
+
 export const ERRORS = {
   IFRAME_NOT_FOUND: {
     name: 'IFRAME_NOT_FOUND',
@@ -9,4 +11,10 @@ export const ERRORS = {
     message: 'iframe not loaded',
     code: 1,
   },
+}
+
+export const LISTENING_METHODS = {
+  LOGOUT: 'logout',
+  LOGIN: 'login',
+  SWITCH_WALLET: 'switch-wallet',
 }
