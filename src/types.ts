@@ -2,8 +2,6 @@ export type AnyParams = {
   [key: string]: string
 }
 
-export type Params = AnyParams | string | null
-
 export interface ISendData {
   method: string
   currency?: string

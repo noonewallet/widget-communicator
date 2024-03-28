@@ -4,12 +4,17 @@ export const ERRORS = {
   IFRAME_NOT_FOUND: {
     name: 'IFRAME_NOT_FOUND',
     message: 'iframe not found',
-    code: 0,
+    code: 1,
   },
   IFRAME_NOT_LOADED: {
     name: 'IFRAME_NOT_LOADED',
     message: 'iframe not loaded',
-    code: 1,
+    code: 2,
+  },
+  NOT_TRUSTED_MESSAGE: {
+    name: 'NOT_TRUSTED_MESSAGE',
+    message: 'Message is not trusted',
+    code: 3,
   },
 }
 
