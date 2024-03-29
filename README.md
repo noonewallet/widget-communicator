@@ -6,9 +6,29 @@
 
 ## Description
 
-**@noonewallet/widget-communicator** is a TypeScript library that enables embedding an iframe with the Noone Crypto
-Wallet
+**@noonewallet/widget-communicator** is a TypeScript library that enables embedding an iframe with the Noone Crypto Wallet.
 onto a web page, and subsequently configuring communication between the iframe and the parent page.
+> You can test the functionality of the iframe and all the described methods on
+> the <a href="https://noonewallet.github.io/noone-widget-preview/" target="_blank">website</a>.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Generating Iframe on Page](#generating-iframe-on-page)
+- [EvmConnector API](#evmconnector-api)
+    - [Get Address](#get-address)
+    - [Get Balance](#get-balance)
+    - [Sign Message](#sign-message)
+    - [Sign Transaction](#sign-transaction)
+    - [Send Transaction](#send-transaction)
+    - [Get Block Number](#get-block-number)
+    - [Get Nonce](#get-nonce)
+    - [Get Gas Price](#get-gas-price)
+- [WalletConnector API](#walletconnector-api)
+    - [Login](#login)
+    - [Logout](#logout)
+    - [Switch Wallet](#switch-wallet)
+- [Errors](#errors)
 
 ## Installation
 
@@ -23,6 +43,8 @@ or
 ```shell
 npm install git+https://github.com/noonewallet/widget-communicator.git
 ```
+
+Publication on npm coming soon.
 
 **Note**: Node version >= 16.15.0
 
@@ -49,13 +71,12 @@ const iframe = new IframeManager('wallet-iframe', 'https://iframe-url.com/')
 const loaded = await iframe.render() // true
 
 ```
+
 - **wallet-iframe** - the id attribute of the iframe, must be unique,
 - **https://iframe-url.com/** - the iframe URL, where the Noone Crypto Wallet is hosted.
 - **iframe.render()** - awaits until the iframe is rendered on the page.
 
 After these steps, the iframe will appear on the page, and you can proceed to configure communication with it.
-
-> You can test the functionality of the iframe and all the described methods on the [website](https://noonewallet.github.io/noone-widget-preview/).
 
 ## Usage
 
@@ -67,15 +88,28 @@ available chains using the `.getAvailableChains()` method.
 
 ```ts
 const iframe = new IframeManager('noone-iframe', 'https://iframe-url.com/')
-await iframe.render()
-const evmConnector = new EvmConnector(iframe)
+const result = await iframe.render() // true
 ```
 
 Now, you can send events to the iframe through the connector. Below, the available methods will be described.
 
-## Communicator API
+## EvmConnector API
+
+### Usage
+
+To work with EVM currencies, you need to create an instance of the `EvmConnector` class.
+
+```ts
+import {IframeManager, EvmConnector} from '@noonewallet/widget-communicator'
+
+const iframe = new IframeManager('noone-iframe', 'https://iframe-url.com/')
+await iframe.render()
+const evmConnector = new EvmConnector(iframe)
+```
 
 ### Get Address
+
+`EvmConnector.getAddress(data: IEvmSendData) Promise<IResponse>`
 
 Returns the wallet address.
 
@@ -94,6 +128,8 @@ if (result.success) {
 
 ### Get Balance
 
+`EvmConnector.getBalance(data: IEvmSendData) Promise<IResponse>`
+
 Returns the wallet balance.
 
 ```ts
@@ -110,6 +146,8 @@ if (result.success) {
 ```
 
 ### Sign Message
+
+`EvmConnector.signMessage(data: IEvmSendData) Promise<IResponse>`
 
 Signs a provided message with your private key.
 **Note:** User confirmation is required on the iframe side. A popup window with signature confirmation will appear in
@@ -130,6 +168,8 @@ if (result.success) {
 ```
 
 ### Sign Transaction
+
+`EvmConnector.signTransaction(data: IEvmSendData) Promise<IResponse>`
 
 Signs a provided transaction. Returns the signed transaction in hex format.
 **Note:** User confirmation is required on the iframe side. A popup window with signature confirmation will appear in
@@ -170,6 +210,8 @@ if (result.success) {
 
 ### Send Transaction
 
+`EvmConnector.sendTransaction(data: IEvmSendData) Promise<IResponse>`
+
 Sends a signed transaction.
 
 ```ts
@@ -189,6 +231,8 @@ if (result.success) {
 
 ### Get Block Number
 
+`EvmConnector.getBlockNumber(data: IEvmSendData) Promise<IResponse>`
+
 Retrieves the current block number from the blockchain.
 
 ```ts
@@ -200,6 +244,8 @@ console.log('Block number: ' + result.data) // 5238123
 ```
 
 ### Get Nonce
+
+`EvmConnector.getNonce(data: IEvmSendData) Promise<IResponse>`
 
 Retrieves the transaction nonce for the current account.
 
@@ -213,6 +259,8 @@ console.log('Nonce: ' + result.data) // 0x00
 
 ### Get Gas Price
 
+`EvmConnector.getGasPrice(data: IEvmSendData) Promise<IResponse>`
+
 Retrieves the current gas price from the blockchain.
 
 ```ts
@@ -220,9 +268,87 @@ const result = await evmConnector.send({
   chainId: 1,
   method: 'getGasPrice'
 })
-// TODO: add response example
-console.log('Gas price: ' + result.data) // 0x00
+console.log('Gas price: ' + result.data) // { "price": "0x1df47b8", "unit": "GWEI" }
 ```
+
+### Get Available Chains
+
+`EvmConnector.getChains(data: IEvmSendData) Promise<IResponse>`
+
+Returns a list of all available EVM networks.
+
+```ts
+const result = await evmConnector.send({
+  chainId: 1,
+  method: 'getGasPrice'
+})
+console.log('Chains: ' + result.data)
+// [
+//  { "name": "Ethereum", "shortName": "ETH", "chainId": 1 },
+//  { "name": "Optimism", "shortName": "OP", "chainId": 10 },
+// ...]
+
+```
+
+## WalletConnector API
+
+The library provides the ability to subscribe to events occurring in the wallet. Currently, the following methods are
+implemented:
+
+### Usage
+
+To listen for events, you need to create an instance of the `WalletConnector` class.
+
+```ts
+import {IframeManager, WalletConnector} from '@noonewallet/widget-communicator'
+
+const iframe = new IframeManager('noone-iframe', 'https://iframe-url.com/')
+await iframe.render()
+const walletConnector = new WalletConnector(iframe)
+```
+
+### Login
+
+`walletConnector.listen('login', () => {})`
+
+The event triggers when the user accesses the wallet:
+
+- upon the initial login;
+- after page reload;
+- upon re-entry after an expired session.
+
+```ts
+walletConnector.listen('login', () => {
+  console.log('Login triggered')
+})
+```
+
+### Logout
+
+`walletConnector.listen('logout', () => {})`
+
+The event triggers when the user logs out of the wallet.
+
+```ts
+walletConnector.listen('logout', () => {
+  console.log('Logout triggered')
+})
+```
+
+### Switch Wallet
+
+`walletConnector.listen('switch-wallet', () => {})`
+
+The event triggers when the user switches to another wallet in the settings.
+
+```ts
+walletConnector.listen('switch-wallet', () => {
+  console.log('Switch wallet triggered')
+})
+```
+
+## Errors
+You can find a list of all errors that the widget can return to the provided [link](/docs/ERRORS.md).
 
 ## License
 
